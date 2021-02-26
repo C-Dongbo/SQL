@@ -40,3 +40,16 @@ a.*
 from log_sample as a, (select @row_num := 0, @grp := '') r
 order by `date`, `logtime1`
 ;
+
+
+/* row_number의 partition by , 조건추가 역할 구현 */
+select a.`id`, a.`logtime1`, a.`logtime2`, a.`task`, a.`cusno`, a.`date`, case when id = 'none' then null else a.`rn` end as rn  from(
+	select 
+	a.*
+	, case when @grp = `date` and id <> 'none' then @row_num := @row_num + 1 else @row_num := 1 end as rn
+	, (@grp := `date`) as tmp
+	from log_sample as a, (select @row_num := 0, @grp := '') r
+	order by case when id <> 'none' then 1 else 0 end, `date`, `logtime1`
+) a
+order by `date`, `logtime1`
+;
