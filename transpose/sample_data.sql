@@ -48,4 +48,28 @@ values
 (15, '황희춘', '영어', 84),
 (15, '황희춘', '수학', 86);
 
-select * from student_grade;
+select student_id, student_name, avg(score) 
+from student_grade
+group by 1,2
+;
+
+
+select 
+student_id, student_name,
+	case when `subject` = '국어' then score end as subject_of_korean,
+    case when `subject` = '영어' then score end as subject_of_english,
+    case when `subject` = '수학' then score end as subject_of_math
+from student_grade
+order by student_id
+;
+
+
+select 
+student_id, student_name,
+	sum(case when `subject` = '국어' then score end) as subject_of_korean,
+    sum(case when `subject` = '영어' then score end) as subject_of_english,
+    sum(case when `subject` = '수학' then score end) as subject_of_math
+from student_grade
+group by student_id, student_name
+order by student_id
+;
